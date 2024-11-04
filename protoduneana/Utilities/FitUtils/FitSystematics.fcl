@@ -1,0 +1,1348 @@
+BEGIN_PROLOG
+
+g4rw_proton_coeff: {
+  Name: "g4rw_proton_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_full_grid_proton_coeffs"
+  }
+}
+
+g4rw_downstream_piplus_tied_coeff: {
+  Name: "g4rw_downstream_piplus_tied_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_downstream_grid_piplus_coeffs_7",
+      "g4rw_downstream_grid_piplus_coeffs_8"
+    ]
+  }
+}
+
+g4rw_downstream_piplus_low_coeff: {
+  Name: "g4rw_downstream_piplus_low_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_downstream_grid_piplus_coeffs_7"
+  }
+}
+
+g4rw_downstream_piplus_high_coeff: {
+  Name: "g4rw_downstream_piplus_high_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_downstream_grid_piplus_coeffs_8"
+  }
+}
+
+g4rw_full_piplus_low_coeff: {
+  Name: "g4rw_full_piplus_low_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_full_grid_piplus_coeffs_7"
+  }
+}
+
+g4rw_full_piplus_high_coeff: {
+  Name: "g4rw_full_piplus_high_coeff"
+  Central: 1.
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_full_grid_piplus_coeffs_8"
+  }
+}
+
+G4RWSysts: {
+  g4rw_QE1: {
+    Name: "g4rw_QE1"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.0
+    ThrowLimit: 0.1
+    ThrowLimitUp: 2.0
+    GenThrowLimit: 0.25
+    GenThrowLimitUp: 1.75
+    Sigma: .2
+
+    Options: {
+      Position: 0
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_0"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_QE2: {
+    Name: "g4rw_QE2"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.0
+    ThrowLimit: 0.1
+    ThrowLimitUp: 2.0
+    GenThrowLimit: 0.25
+    GenThrowLimitUp: 1.75
+    Sigma: .2
+
+    Options: {
+      Position: 1
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_1"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Abs1: {
+    Name: "g4rw_Abs1"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 2
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_2"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Abs2: {
+    Name: "g4rw_Abs2"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 3
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_3"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Cex1: {
+    Name: "g4rw_Cex1"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 4
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_4"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Cex2: {
+    Name: "g4rw_Cex2"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 5
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_5"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Cex3: {
+    Name: "g4rw_Cex3"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 6
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_6"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Reac1: {
+    Name: "g4rw_Reac1"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 7
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_7"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Reac2: {
+    Name: "g4rw_Reac2"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.
+    ThrowLimitUp: 2.0
+    Sigma: .75
+
+    Options: {
+      Position: 8
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_8"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_DCex: {
+    Name: "g4rw_DCex"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.1
+    ThrowLimitUp: 2.00
+    GenThrowLimit: 0.25
+    GenThrowLimitUp: 1.75
+    Sigma: .75
+
+    Options: {
+      Position: 9
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_9"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_Prod: {
+    Name: "g4rw_Prod"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.1
+    ThrowLimitUp: 2.00
+    GenThrowLimit: 0.25
+    GenThrowLimitUp: 1.75
+    Sigma: .75
+
+    Options: {
+      Position: 10
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_weights_10"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+
+  g4rw_proton: {
+    Name: "g4rw_proton"
+    Central: 1.
+    LowerLimit: 0.1
+    UpperLimit: 2.00
+    ThrowLimit: 0.1
+    ThrowLimitUp: 2.00
+    GenThrowLimit: 0.25
+    GenThrowLimitUp: 1.75
+    Sigma: .75
+
+    Options: {
+      Position: 0
+      PlusBranch: "g4rw_full_primary_plus_sigma_weight"
+      MinusBranch: "g4rw_full_primary_minus_sigma_weight"
+
+      IsGrid: true
+      GridBranch: "g4rw_full_grid_proton_weights"
+      GridEnd: 2.0
+      GridDelta: 0.1
+      GridStart: 0.1
+      GridN: 20
+    }
+  }
+}
+
+SystematicsList: {
+  dEdX_Cal_Spline: {
+    Name: "dEdX_Cal_Spline"
+    #Central: 1.011e-3
+    #LowerLimit: .809e-3
+    #UpperLimit: 1.2132e-3
+
+    Central: 1.0
+    LowerLimit: 0.6
+    UpperLimit: 1.4
+
+    ThrowLimit: 0.7
+    ThrowLimitUp: 1.3
+    GenThrowLimit: 0.7
+    GenThrowLimitUp: 1.3
+    Sigma: .101e-3
+  
+    Options: {
+      Cal_set: @local::CalorimetryParameters_SPProd4_MC_SCE
+      Fix_dQdX: true
+      #C_cal_vars: [.7, .8, .9, 1.1, 1.2, 1.3]
+      C_cal_vars: [.6, .65, .7, .75, .8, .85, .9, .95, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4]
+      #C_cal_vars: [.809e-3, .910e-3, 1.121e-3, 1.2132e-3]
+      TemplateFile: "/cvmfs/larsoft.opensciencegrid.org/products/larsoft_data/v1_02_01/ParticleIdentification/dEdxrestemplates.root"
+    }
+  }
+
+  beam_shift_spline_2: {
+    Name: "beam_shift_spline_2"
+    Central: 1.0
+    LowerLimit: 0.8
+    UpperLimit: 1.2
+
+    ThrowLimit: 0.8
+    ThrowLimitUp: 1.2
+    GenThrowLimit: 0.9
+    GenThrowLimitUp: 1.2
+    Sigma: .01
+
+    Options: {
+      ShiftVals:       [.80,  .81,  .82,  .83,  .84,  .85,  .86,  .87,  .88,  .89, 
+                        .90,  .91,  .92,  .93,  .94,  .95,  .96,  .97,  .98,  .99, 
+                             1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09, 
+                       1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19,
+                       1.20]
+    }
+  }
+
+  beam_shift_ratio: {
+    Name: "beam_shift_ratio"
+    Central: 1.0
+    LowerLimit: 0.8
+    UpperLimit: 1.2
+
+    ThrowLimit: 0.8
+    ThrowLimitUp: 1.2
+    GenThrowLimit: 0.9
+    GenThrowLimitUp: 1.1
+    Sigma: .01
+
+    Options: {
+      Vals:       [.85,  .86,  .87,  .88,  .89, 
+                   .90,  .91,  .92,  .93,  .94,  .95,  .96,  .97,  .98,  .99, 
+                        1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09, 
+                   1.10, 1.11, 1.12, 1.13, 1.14, 1.15]
+      nBins: 20
+      Binning: [.8, 1.2]
+    }
+  }
+
+  beam_shift: {
+    Name: "beam_shift"
+    Central: 0. 
+    LowerLimit: -3. 
+    UpperLimit: 3. 
+    ThrowLimit: -3.
+    ThrowLimitUp: 3.
+    GenThrowLimit: -2.
+    GenThrowLimitUp: 2.
+    Sigma: 1. 
+  
+    Options: {
+      #ShiftFile: "shift_map.root"
+      ShiftFile: "map_B_theta_2.root"
+      #Limits: [-.15, .15]
+      Limits: [-.2, .2]
+      #Limits: [-.075, .075]
+      SaveInfo: false 
+      WeightCap: -999. 
+      RatioLimitUp: .1
+      RatioLimitDown: -.1
+    }
+  }
+  beam_shift_spline: {
+    Name: "beam_shift_spline"
+    Central: 0. 
+    LowerLimit: -5. 
+    UpperLimit: 5. 
+    ThrowLimit: -5.
+    ThrowLimitUp: 5.
+    GenThrowLimit: -5.
+    GenThrowLimitUp: 5.
+    Sigma: 1. 
+  
+    Options: {
+      ShiftFile: "map_B_theta_2.root"
+      Limits: [-.2, .2]
+    }
+  }
+  ediv_weight: {
+    Name: "ediv_weight"
+    Central: 0.5 #1.0
+    LowerLimit: 0.
+    UpperLimit: 1.6
+    ThrowLimit: 0.0
+    ThrowLimitUp: 1.6
+    GenThrowLimit: 0.15
+    GenThrowLimitUp: 1.45
+    sigma: .1
+
+    Options: {
+      F: 0.65314953 
+      Cut: 234. 
+    }
+  }
+  no_track_weight: {
+    Name: "no_track_weight"
+    Central: 1.62 #1.0
+    LowerLimit: 0.01
+    UpperLimit: 3.04
+    ThrowLimit: 0.01
+    ThrowLimitUp: 3.04
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 3.04
+    sigma: .1
+
+    Options: {
+      #F: 0.14826903 
+      #F: 0.16407504 
+      F: 0.16374722
+    }
+  }
+  beam_cut_weight: {
+    Name: "beam_cut_weight"
+    Central: 1.0
+    LowerLimit: 0.01
+    UpperLimit: 2.164
+    ThrowLimit: 0.01
+    ThrowLimitUp: 2.164
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 2.164
+    sigma: .1
+
+    Options: {
+      F: 0.23198111 
+    }
+  }
+
+  low_p_weight: {
+    Name: "low_p_weight"
+    Central: 1.0
+    LowerLimit: 0.01
+    UpperLimit: 5.0
+    ThrowLimit: 0.01
+    ThrowLimitUp: 5.0
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 5.0
+    sigma: .1
+
+    Options: {
+      Fractions: [0.11257, 0.11752, 0.125, 0.12009, 0.10625, 0.10667]
+    }
+  }
+
+  npi0_weight: {
+    Name: "npi0_weight"
+    Central: 1.0
+    LowerLimit: 0.01
+    UpperLimit: 5.0
+    ThrowLimit: 0.01
+    ThrowLimitUp: 5.0
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 5.0
+    sigma: .1
+
+    Options: {
+      Fractions: [0.01264, 0.02818, 0.03742, 0.04429, 0.03888, 0.04155]
+    }
+  }
+
+  end_z_no_track_weight: {
+    Name: "end_z_no_track_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 1.79999
+    ThrowLimit: 0.01
+    ThrowLimitUp: 1.79999
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 1.79999
+    sigma: .1
+    Options: {
+      Cut: 30.
+      Fractions: [
+        [1, [0.5555555555555556, 0.5, 0.24390243902439027, 0.23199999999999998, 0.17057291666666669, 0.20821295914156004, 0.27507755946225443]],
+        [2, [0.0, 0.2, 0.2814814814814815, 0.23537117903930133, 0.27359964293684447, 0.32472691161866934]],
+        [3, [0.28571428571428575, 0.2, 0.18475073313782994, 0.14107547781017168, 0.16224708767627224, 0.19190031152647977]],
+        [4, []],
+        [5, [0.5675675675675675]],
+        [6, []],
+        [7, [0.0707070707070707]]
+      ]
+    }
+  }
+
+  upstream_int_weight: {
+    Name: "upstream_int_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 5.0
+    ThrowLimit: 0.01
+    ThrowLimitUp: 5.0
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 5.0
+    sigma: .1
+    Options: {
+    }
+  }
+
+  BG_pions_weight: {
+    Name: "BG_pions_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 5.0
+    ThrowLimit: 0.01
+    ThrowLimitUp: 5.0
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 5.0
+    sigma: .1
+    Options: {
+    }
+  }
+
+  box_beam_weight: {
+    Name: "box_beam_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 5.0
+    ThrowLimit: 0.01
+    ThrowLimitUp: 5.0
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 5.0
+    Sigma: .1
+    Options: {
+      Fraction: .15469
+      Regions: [
+        [440, 460], [470, 480], [580, 610], [270, 340]
+      ]
+    }
+  }
+
+  beam_match_weight: {
+    Name: "beam_match_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 7.000
+    ThrowLimit: 0.1
+    ThrowLimitUp: 7.000
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 7.000
+    Sigma: .1
+    Options: {
+      Fraction: 0.7641
+      UseSingleFrac: false
+      Fractions: [
+        [1, [0.10061145080600334, 0.09203980099502487, 0.07565470417070805, 0.08508880627839735, 0.08678102926337034, 0.09477590636597202, 0.09182174338883448, 0.09882455376578145, 0.09813874788494077, 0.10864393338620143, 0.1293269230769231, 0.1421383647798742]],
+        [2, [0.07894736842105263, 0.09787735849056604, 0.09774436090225563, 0.09059434506635891, 0.09943551888840643, 0.10181311018131102, 0.1003771395416304, 0.11287653095001655, 0.1294885745375408, 0.13164893617021275]],
+        [3, [0.08483853311439518, 0.09777015437392796, 0.09600997506234414, 0.09658448314860892, 0.09789057350032959, 0.10410662824207492, 0.10805189660295138, 0.10970035551041138, 0.11806098514464425, 0.12413314840499307]],
+        [4, [0.07957847261373]],
+        [5, [0.08524484072769109]],
+        [6, [0.09554878932869364]],
+        [7, [0.08918062471706655]]
+      ]
+      Limits: [
+        10., 20., 30., 50.
+      ]
+    }
+  }
+
+  beam_match_low_weight: {
+    Name: "beam_match_low_weight"
+    Central: 0.75 
+    LowerLimit: 0.01
+    UpperLimit: 1.1999
+    ThrowLimit: 0.01
+    ThrowLimitUp: 1.1999
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 1.1999
+    Sigma: .1
+    Options: {
+      Fraction: 0.4992177
+      Limit: 30.
+      Fractions: [
+        [1, [-1.0, -1.0, -1.0, 0.8333333333333333, 0.7454545454545455, 0.5571428571428572, 0.7421602787456446, 0.7039239001189062, 0.6770186335403727, 0.5923777961888981, 0.5314447592067989, 0.44310575635876837] ],
+        [2, [-1.0, -1.0, 0.6451612903225806, 0.75, 0.6824324324324325, 0.6582524271844661, 0.6609318996415771, 0.5916125811283075, 0.4919406834300451, 0.4435146443514645] ],
+        [3, [-1.0, 0.625, 0.5223880597014925, 0.5303030303030303, 0.48661800486618007, 0.564845292955892, 0.5222274216190922, 0.45834628535903016, 0.4086080586080586, 0.32247557003257327] ],
+        [5, [0.5789473684210527] ],
+        [6, [-1.] ],
+        [7, [0.011290322580645162] ]]
+      UseSingleFrac: false 
+    }
+  }
+
+  beam_match_high_weight: {
+    Name: "beam_match_high_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 1.0910 
+    ThrowLimit: 0.01
+    ThrowLimitUp: 1.0910 
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 1.0910 
+    Sigma: .1
+    Options: {
+      Fraction: 0.85399365 
+      Limit: 30.
+      Fractions: [
+        [1, [0.8925389755011136, 0.8979464841319228, 0.9164237123420798, 0.9020340390203404, 0.9006168608636053, 0.8911685994647637, 0.8843824071635501, 0.8665067945643486, 0.8644492131616595, 0.8568298027757487, 0.8476190476190476, 0.75] ],
+        [2, [0.9105571847507332, 0.8899408284023669, 0.8782161234991424, 0.889754343918514, 0.8682134570765662, 0.839779005524862, 0.8216374269005848, 0.8084479371316308, 0.7909407665505226, 0.8285714285714286] ],
+        [3, [0.8946212952799123, 0.8734835355285963, 0.8583253740846865, 0.8297418896519062, 0.8159802015202403, 0.7868996915846674, 0.7607762321827236, 0.7346819114629142, 0.7304812834224599, 0.7355371900826446] ],
+        [5, [0.9064748201438849] ],
+        [6, [0.899199753770391] ],
+        [7, [0.2807505211952745] ]]
+
+      UseSingleFrac: false 
+
+    }
+  }
+
+  true_beam_shift: {
+    Name: "true_beam_shift"
+    Central: 0.
+    LowerLimit: -.05
+    UpperLimit: .05
+    ThrowLimit: -.05
+    ThrowLimitUp: .05
+    GenThrowLimit: -.05
+    GenThrowLimitUp: .05
+  }
+
+  quad_beam_shift: {
+    Name: "quad_beam_shift"
+    Central: 1.
+    LowerLimit: .0
+    UpperLimit: 5.
+    ThrowLimit: 0. 
+    ThrowLimitUp: 4.5 
+    GenThrowLimit: 0. 
+    GenThrowLimitUp: 4.5
+    Options: {
+      Bins: [700., 750., 800., 850., 900., 950., 1000., 1050., 1100.]
+      Means: [-5.712, -1.078, 4.554, 9.562, 16.343, 26.587, 44.727, 55.282]
+      Sigmas: [17.022, 16.430, 18.410, 20.128, 20.590, 19.444, 17.269, 39.745]
+
+    }
+  }
+
+  beam_shift_bin_0: {
+    Name: "beam_shift_bin_0"
+    Central: 0.
+    LowerLimit: -200
+    UpperLimit: 200
+    ThrowLimit: -150
+    ThrowLimitUp: 150 
+    GenThrowLimit: -150. 
+    GenThrowLimitUp: 150.
+    IsBeamShiftBin: true
+    Options: {
+      RangeLow: 700.
+      RangeHigh: 750.
+      Mean: -5.712
+      Sigma: 17.022
+
+      #Bins: [700., 750., 800., 850., 900., 950., 1000., 1050., 1100.]
+      #Means: [-5.712, -1.078, 4.554, 9.562, 16.343, 26.587, 44.727, 55.282]
+      #Sigmas: [17.022, 16.430, 18.410, 20.128, 20.590, 19.444, 17.269, 39.745]
+    }
+  }
+
+  eloss_weight: {
+    Name: "eloss_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 2.0000
+    ThrowLimit: 0.01
+    ThrowLimitUp: 2.0000
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 2.0000
+    Sigma: .1
+    Options: {
+      Cut: 70.
+       
+      ##Fractions: [
+      ##  [1, 0.08407665304713127 ],
+      ##  [2, 0.060991829754892646],
+      ##  [3, 0.05575954231064811 ],
+      ##  [5, 0.46045908340539266 ],
+      ##  [6, 0.05291508238276299 ],
+      ##  [7, 0.08047690014903129 ]
+      ##]
+
+      Fractions: [ [ 1 , [0.29321, 0.13314, 0.14764, 0.12441, 0.11934, 0.11955, 0.09195, 0.06120, 0.02947, 0.01143, 0.00732, 0.00647]],
+      [ 2 , [0.19602, 0.14081, 0.13867, 0.11444, 0.08846, 0.05674, 0.03311, 0.01310, 0.00321, 0.00181]],
+      [ 3 , [0.16979, 0.12500, 0.13072, 0.11704, 0.08512, 0.05526, 0.02945, 0.01397, 0.00576, 0.00253]],
+      [ 6 , [0.05379]],
+      [ 7 , [0.08013]]]
+      
+    }
+  }
+
+  eloss_muon_weight: {
+    Name: "eloss_muon_weight"
+    Central: 1.
+    LowerLimit: 0.01
+    UpperLimit: 2.0000
+    ThrowLimit: 0.01
+    ThrowLimitUp: 2.0000
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 2.0000
+    Sigma: .1
+    Options: {
+      Cut: 70.
+       
+      Fractions: [
+        [1, 0.08407665304713127 ],
+        [2, 0.060991829754892646],
+        [3, 0.05575954231064811 ],
+        [5, 0.46045908340539266 ],
+        [6, 0.05291508238276299 ],
+        [7, 0.08047690014903129 ]
+      ]
+      
+    }
+  }
+
+  beam_scraper_weight: {
+    Name: "beam_scraper_weight"
+    Central: 1.
+    LowerLimit: 1.e-5
+    UpperLimit: 5.0000
+    ThrowLimit: 0.01
+    ThrowLimitUp: 4.0000
+    GenThrowLimit: 0.01
+    GenThrowLimitUp: 4.0000
+    Sigma: .1
+    Options: {}
+  }
+}
+
+SystematicsList.beam_shift_bin_1: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_1.Name: "beam_shift_bin_1"
+SystematicsList.beam_shift_bin_1.Options.RangeLow: 750.
+SystematicsList.beam_shift_bin_1.Options.RangeHigh: 800.
+SystematicsList.beam_shift_bin_1.Options.Mean: -1.078
+SystematicsList.beam_shift_bin_1.Options.Sigma: 16.430 
+
+SystematicsList.beam_shift_bin_2: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_2.Name: "beam_shift_bin_2"
+SystematicsList.beam_shift_bin_2.Options.RangeLow: 800.
+SystematicsList.beam_shift_bin_2.Options.RangeHigh: 850.
+SystematicsList.beam_shift_bin_2.Options.Mean: 4.554
+SystematicsList.beam_shift_bin_2.Options.Sigma: 18.410 
+
+SystematicsList.beam_shift_bin_3: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_3.Name: "beam_shift_bin_3"
+SystematicsList.beam_shift_bin_3.Options.RangeLow: 850.
+SystematicsList.beam_shift_bin_3.Options.RangeHigh: 900.
+SystematicsList.beam_shift_bin_3.Options.Mean: 9.562
+SystematicsList.beam_shift_bin_3.Options.Sigma: 20.128 
+
+SystematicsList.beam_shift_bin_4: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_4.Name: "beam_shift_bin_4"
+SystematicsList.beam_shift_bin_4.Options.RangeLow: 900.
+SystematicsList.beam_shift_bin_4.Options.RangeHigh: 950.
+SystematicsList.beam_shift_bin_4.Options.Mean: 16.343
+SystematicsList.beam_shift_bin_4.Options.Sigma: 20.590 
+
+SystematicsList.beam_shift_bin_5: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_5.Name: "beam_shift_bin_5"
+SystematicsList.beam_shift_bin_5.Options.RangeLow: 950.
+SystematicsList.beam_shift_bin_5.Options.RangeHigh: 1000.
+SystematicsList.beam_shift_bin_5.Options.Mean: 26.587
+SystematicsList.beam_shift_bin_5.Options.Sigma: 19.444 
+
+SystematicsList.beam_shift_bin_6: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_6.Name: "beam_shift_bin_6"
+SystematicsList.beam_shift_bin_6.Options.RangeLow: 1000.
+SystematicsList.beam_shift_bin_6.Options.RangeHigh: 1050.
+SystematicsList.beam_shift_bin_6.Options.Mean: 44.727
+SystematicsList.beam_shift_bin_6.Options.Sigma: 17.269 
+
+SystematicsList.beam_shift_bin_7: @local::SystematicsList.beam_shift_bin_0
+SystematicsList.beam_shift_bin_7.Name: "beam_shift_bin_7"
+SystematicsList.beam_shift_bin_7.Options.RangeLow: 1050.
+SystematicsList.beam_shift_bin_7.Options.RangeHigh: 1100.
+SystematicsList.beam_shift_bin_7.Options.Mean: 55.282
+SystematicsList.beam_shift_bin_7.Options.Sigma: 39.745 
+
+SystematicsList.beam_match_weight_coarse: @local::SystematicsList.beam_match_weight
+SystematicsList.beam_match_weight_coarse.Options.Fractions:
+[[1, [0.09790605546123372, 0.08293904814917896, 0.08506616257088846, 0.09363245566899517, 0.09775256382282348, 0.11536453801983644, 0.1446862996158771]],
+[2, [0.07778608825729244, 0.09925558312655088, 0.09642222786094899, 0.10104923325262308, 0.11980696600923206, 0.1308411214953271]],
+[3, [0.08556298773690078, 0.09608277900960828, 0.09770784770784771, 0.10680738203116366, 0.11308106753539657, 0.12402826855123675]],
+[4, [0.07976705197211682]],
+[5, [0.08531586267476758]],
+[6, [0.09583579444772593]],
+[7, [0.08947612424663885]]]
+SystematicsList.beam_match_weight_coarse.UpperLimit:      6.911
+SystematicsList.beam_match_weight_coarse.ThrowLimitUp:    6.911
+SystematicsList.beam_match_weight_coarse.GenThrowLimitUp: 6.8
+
+SystematicsList.end_z_no_track_weight_coarse: @local::SystematicsList.end_z_no_track_weight
+SystematicsList.end_z_no_track_weight_coarse.Options.Fractions: [
+[1, [-1., 0.5454545454545455, 0.24719101123595508, 0.22820037105751392, 0.17168034032209054, 0.20778466305189774, 0.27755905511811024] ],
+[2, [0.0, 0.23255813953488372, 0.27526132404181186, 0.23842404549147034, 0.2752179327521794, 0.3222748815165877] ],
+[3, [0.28571428571428575, 0.19469026548672566, 0.18655692729766807, 0.14479025710419485, 0.16308307736266878, 0.19363474122546107] ],
+[4, [] ],
+[5, [0.5750000000000001] ],
+[6, [] ],
+[7, [0.07407407407407407] ]
+]
+SystematicsList.end_z_no_track_weight_coarse.UpperLimit: 1.7391
+SystematicsList.end_z_no_track_weight_coarse.ThrowLimitUp: 1.7391
+SystematicsList.end_z_no_track_weight_coarse.GenThrowLimitUp: 1.700
+
+g4rw_full_fine_piplus_coeff_abs_0_500: {
+  Name: "g4rw_full_fine_piplus_coeff_abs_0_500"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: false
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_full_fine_piplus_coeffs_20",
+      "g4rw_full_fine_piplus_coeffs_21",
+      "g4rw_full_fine_piplus_coeffs_22",
+      "g4rw_full_fine_piplus_coeffs_23",
+      "g4rw_full_fine_piplus_coeffs_24",
+      "g4rw_full_fine_piplus_coeffs_25",
+      "g4rw_full_fine_piplus_coeffs_26",
+      "g4rw_full_fine_piplus_coeffs_27",
+      "g4rw_full_fine_piplus_coeffs_28",
+      "g4rw_full_fine_piplus_coeffs_29"
+    ]
+  }
+}
+
+g4rw_full_fine_piplus_coeff_abs_900_1000: {
+  Name: "g4rw_full_fine_piplus_coeff_abs_900_1000"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: false
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_full_fine_piplus_coeffs_38",
+      "g4rw_full_fine_piplus_coeffs_39"
+    ]
+  }
+}
+
+g4rw_full_fine_piplus_coeff_abs_500_550: {
+  Name: "g4rw_full_fine_piplus_coeff_abs_500_550"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_full_fine_piplus_coeffs_30"
+  }
+}
+
+g4rw_full_fine_piplus_coeff_abs_550_600: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_550_600.Name: "g4rw_full_fine_piplus_coeff_abs_550_600"
+g4rw_full_fine_piplus_coeff_abs_550_600.Options.Branch: "g4rw_full_fine_piplus_coeffs_31"
+
+g4rw_full_fine_piplus_coeff_abs_600_650: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_600_650.Name: "g4rw_full_fine_piplus_coeff_abs_600_650"
+g4rw_full_fine_piplus_coeff_abs_600_650.options.branch: "g4rw_full_fine_piplus_coeffs_32"
+
+g4rw_full_fine_piplus_coeff_abs_650_700: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_650_700.Name: "g4rw_full_fine_piplus_coeff_abs_650_700"
+g4rw_full_fine_piplus_coeff_abs_650_700.options.branch: "g4rw_full_fine_piplus_coeffs_33"
+
+g4rw_full_fine_piplus_coeff_abs_700_750: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_700_750.Name: "g4rw_full_fine_piplus_coeff_abs_700_750"
+g4rw_full_fine_piplus_coeff_abs_700_750.options.branch: "g4rw_full_fine_piplus_coeffs_34"
+
+g4rw_full_fine_piplus_coeff_abs_750_800: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_750_800.Name: "g4rw_full_fine_piplus_coeff_abs_750_800"
+g4rw_full_fine_piplus_coeff_abs_750_800.options.branch: "g4rw_full_fine_piplus_coeffs_35"
+
+g4rw_full_fine_piplus_coeff_abs_800_850: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_800_850.Name: "g4rw_full_fine_piplus_coeff_abs_800_850"
+g4rw_full_fine_piplus_coeff_abs_800_850.options.branch: "g4rw_full_fine_piplus_coeffs_36"
+
+g4rw_full_fine_piplus_coeff_abs_850_900: @local::g4rw_full_fine_piplus_coeff_abs_500_550
+g4rw_full_fine_piplus_coeff_abs_850_900.Name: "g4rw_full_fine_piplus_coeff_abs_850_900"
+g4rw_full_fine_piplus_coeff_abs_850_900.options.branch: "g4rw_full_fine_piplus_coeffs_37"
+
+
+g4rw_full_fine_piplus_coeff_cex_0_500: {
+  Name: "g4rw_full_fine_piplus_coeff_cex_0_500"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: false
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_full_fine_piplus_coeffs_40",
+      "g4rw_full_fine_piplus_coeffs_41",
+      "g4rw_full_fine_piplus_coeffs_42",
+      "g4rw_full_fine_piplus_coeffs_43",
+      "g4rw_full_fine_piplus_coeffs_44",
+      "g4rw_full_fine_piplus_coeffs_45",
+      "g4rw_full_fine_piplus_coeffs_46",
+      "g4rw_full_fine_piplus_coeffs_47",
+      "g4rw_full_fine_piplus_coeffs_48",
+      "g4rw_full_fine_piplus_coeffs_49"
+    ]
+  }
+}
+
+g4rw_full_fine_piplus_coeff_cex_900_1000: {
+  Name: "g4rw_full_fine_piplus_coeff_cex_900_1000"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: false
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_full_fine_piplus_coeffs_58",
+      "g4rw_full_fine_piplus_coeffs_59"
+    ]
+  }
+}
+
+g4rw_full_fine_piplus_coeff_cex_500_550: {
+  Name: "g4rw_full_fine_piplus_coeff_cex_500_550"
+  Central: 1.
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+
+  Options: {
+    Branch: "g4rw_full_fine_piplus_coeffs_50"
+  }
+}
+
+g4rw_full_fine_piplus_coeff_cex_550_600: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_550_600.Name: "g4rw_full_fine_piplus_coeff_cex_550_600"
+g4rw_full_fine_piplus_coeff_cex_550_600.Options.Branch: "g4rw_full_fine_piplus_coeffs_51"
+
+g4rw_full_fine_piplus_coeff_cex_600_650: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_600_650.Name: "g4rw_full_fine_piplus_coeff_cex_600_650"
+g4rw_full_fine_piplus_coeff_cex_600_650.options.branch: "g4rw_full_fine_piplus_coeffs_52"
+
+g4rw_full_fine_piplus_coeff_cex_650_700: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_650_700.Name: "g4rw_full_fine_piplus_coeff_cex_650_700"
+g4rw_full_fine_piplus_coeff_cex_650_700.options.branch: "g4rw_full_fine_piplus_coeffs_53"
+
+g4rw_full_fine_piplus_coeff_cex_700_750: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_700_750.Name: "g4rw_full_fine_piplus_coeff_cex_700_750"
+g4rw_full_fine_piplus_coeff_cex_700_750.options.branch: "g4rw_full_fine_piplus_coeffs_54"
+
+g4rw_full_fine_piplus_coeff_cex_750_800: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_750_800.Name: "g4rw_full_fine_piplus_coeff_cex_750_800"
+g4rw_full_fine_piplus_coeff_cex_750_800.options.branch: "g4rw_full_fine_piplus_coeffs_55"
+
+g4rw_full_fine_piplus_coeff_cex_800_850: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_800_850.Name: "g4rw_full_fine_piplus_coeff_cex_800_850"
+g4rw_full_fine_piplus_coeff_cex_800_850.options.branch: "g4rw_full_fine_piplus_coeffs_56"
+
+g4rw_full_fine_piplus_coeff_cex_850_900: @local::g4rw_full_fine_piplus_coeff_cex_500_550
+g4rw_full_fine_piplus_coeff_cex_850_900.Name: "g4rw_full_fine_piplus_coeff_cex_850_900"
+g4rw_full_fine_piplus_coeff_cex_850_900.options.branch: "g4rw_full_fine_piplus_coeffs_57"
+
+G4RWFitPars: [
+  @local::g4rw_full_fine_piplus_coeff_abs_0_500,
+  @local::g4rw_full_fine_piplus_coeff_abs_550_600,
+  @local::g4rw_full_fine_piplus_coeff_abs_600_650,
+  @local::g4rw_full_fine_piplus_coeff_abs_650_700,
+  @local::g4rw_full_fine_piplus_coeff_abs_700_750,
+  @local::g4rw_full_fine_piplus_coeff_abs_750_800,
+  @local::g4rw_full_fine_piplus_coeff_abs_800_850,
+  @local::g4rw_full_fine_piplus_coeff_abs_850_900,
+  @local::g4rw_full_fine_piplus_coeff_abs_900_1000,
+
+  @local::g4rw_full_fine_piplus_coeff_cex_0_500,
+  @local::g4rw_full_fine_piplus_coeff_cex_550_600,
+  @local::g4rw_full_fine_piplus_coeff_cex_600_650,
+  @local::g4rw_full_fine_piplus_coeff_cex_650_700,
+  @local::g4rw_full_fine_piplus_coeff_cex_700_750,
+  @local::g4rw_full_fine_piplus_coeff_cex_750_800,
+  @local::g4rw_full_fine_piplus_coeff_cex_800_850,
+  @local::g4rw_full_fine_piplus_coeff_cex_850_900,
+  @local::g4rw_full_fine_piplus_coeff_cex_900_1000
+]
+
+############
+
+g4rw_full_fine_piplus_coeff_abs_500_600: @local::g4rw_full_fine_piplus_coeff_abs_0_500
+g4rw_full_fine_piplus_coeff_abs_500_600.Name: "g4rw_full_fine_piplus_coeff_abs_500_600"
+g4rw_full_fine_piplus_coeff_abs_500_600.Options.Branches: ["g4rw_full_fine_piplus_coeffs_30", "g4rw_full_fine_piplus_coeffs_31"]
+
+g4rw_full_fine_piplus_coeff_abs_600_700: @local::g4rw_full_fine_piplus_coeff_abs_0_500
+g4rw_full_fine_piplus_coeff_abs_600_700.Name: "g4rw_full_fine_piplus_coeff_abs_600_700"
+g4rw_full_fine_piplus_coeff_abs_600_700.Options.Branches: ["g4rw_full_fine_piplus_coeffs_32", "g4rw_full_fine_piplus_coeffs_33"]
+
+g4rw_full_fine_piplus_coeff_abs_700_800: @local::g4rw_full_fine_piplus_coeff_abs_0_500
+g4rw_full_fine_piplus_coeff_abs_700_800.Name: "g4rw_full_fine_piplus_coeff_abs_700_800"
+g4rw_full_fine_piplus_coeff_abs_700_800.Options.Branches: ["g4rw_full_fine_piplus_coeffs_34", "g4rw_full_fine_piplus_coeffs_35"]
+
+g4rw_full_fine_piplus_coeff_abs_800_900: @local::g4rw_full_fine_piplus_coeff_abs_0_500
+g4rw_full_fine_piplus_coeff_abs_800_900.Name: "g4rw_full_fine_piplus_coeff_abs_800_900"
+g4rw_full_fine_piplus_coeff_abs_800_900.Options.Branches: ["g4rw_full_fine_piplus_coeffs_36", "g4rw_full_fine_piplus_coeffs_37"]
+
+
+
+g4rw_full_fine_piplus_coeff_cex_500_600: @local::g4rw_full_fine_piplus_coeff_cex_0_500
+g4rw_full_fine_piplus_coeff_cex_500_600.Name: "g4rw_full_fine_piplus_coeff_cex_500_600"
+g4rw_full_fine_piplus_coeff_cex_500_600.Options.Branches: ["g4rw_full_fine_piplus_coeffs_50", "g4rw_full_fine_piplus_coeffs_51"]
+
+g4rw_full_fine_piplus_coeff_cex_600_700: @local::g4rw_full_fine_piplus_coeff_cex_0_500
+g4rw_full_fine_piplus_coeff_cex_600_700.Name: "g4rw_full_fine_piplus_coeff_cex_600_700"
+g4rw_full_fine_piplus_coeff_cex_600_700.Options.Branches: ["g4rw_full_fine_piplus_coeffs_52", "g4rw_full_fine_piplus_coeffs_53"]
+
+g4rw_full_fine_piplus_coeff_cex_700_800: @local::g4rw_full_fine_piplus_coeff_cex_0_500
+g4rw_full_fine_piplus_coeff_cex_700_800.Name: "g4rw_full_fine_piplus_coeff_cex_700_800"
+g4rw_full_fine_piplus_coeff_cex_700_800.Options.Branches: ["g4rw_full_fine_piplus_coeffs_54", "g4rw_full_fine_piplus_coeffs_55"]
+
+g4rw_full_fine_piplus_coeff_cex_800_900: @local::g4rw_full_fine_piplus_coeff_cex_0_500
+g4rw_full_fine_piplus_coeff_cex_800_900.Name: "g4rw_full_fine_piplus_coeff_cex_800_900"
+g4rw_full_fine_piplus_coeff_cex_800_900.Options.Branches: ["g4rw_full_fine_piplus_coeffs_56", "g4rw_full_fine_piplus_coeffs_57"]
+
+G4RWFitParsTied: [
+  @local::g4rw_full_fine_piplus_coeff_abs_0_500,
+  @local::g4rw_full_fine_piplus_coeff_abs_500_600,
+  @local::g4rw_full_fine_piplus_coeff_abs_600_700,
+  @local::g4rw_full_fine_piplus_coeff_abs_700_800,
+  @local::g4rw_full_fine_piplus_coeff_abs_800_900,
+  @local::g4rw_full_fine_piplus_coeff_abs_900_1000,
+
+  @local::g4rw_full_fine_piplus_coeff_cex_0_500,
+  @local::g4rw_full_fine_piplus_coeff_cex_500_600,
+  @local::g4rw_full_fine_piplus_coeff_cex_600_700,
+  @local::g4rw_full_fine_piplus_coeff_cex_700_800,
+  @local::g4rw_full_fine_piplus_coeff_cex_800_900,
+  @local::g4rw_full_fine_piplus_coeff_cex_900_1000
+]
+
+
+g4rw_full_grid_piplus_coeff_abs: {
+  Name: "g4rw_full_grid_piplus_coeff_abs"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: false
+  IsTiedG4RWCoeff: true
+
+  Options: {
+    Branches: [
+      "g4rw_full_grid_piplus_coeffs_2",
+      "g4rw_full_grid_piplus_coeffs_3"
+    ]
+  }
+}
+
+g4rw_full_grid_piplus_coeff_cex: @local::g4rw_full_grid_piplus_coeff_abs
+g4rw_full_grid_piplus_coeff_cex.Name: "g4rw_full_grid_piplus_coeff_cex"
+g4rw_full_grid_piplus_coeff_cex.IsTiedG4RWCoeff: false
+g4rw_full_grid_piplus_coeff_cex.IsG4RWCoeff: true 
+g4rw_full_grid_piplus_coeff_cex.Options.Branch: "g4rw_full_grid_piplus_coeffs_6"
+g4rw_full_grid_piplus_coeff_cex.Options.Branches: [
+      #"g4rw_full_grid_piplus_coeffs_4",
+      #"g4rw_full_grid_piplus_coeffs_5",
+      "g4rw_full_grid_piplus_coeffs_6"
+    ]
+
+g4rw_full_grid_abscex_coeff_abs_0_500: {
+  Name: "g4rw_full_grid_abscex_coeff_abs_0_500"
+  Central: 1
+  LowerLimit: 0.1
+  LowerLimit: 0.1
+  UpperLimit: 2.0
+  ThrowLimit: 0.1
+  ThrowLimitUp: 2.0
+  GenThrowLimit: 0.25
+  GenThrowLimitUp: 1.75
+  Sigma: .2
+  IsG4RWCoeff: true
+  IsTiedG4RWCoeff: false 
+
+  Options: {
+    Branch: "g4rw_full_grid_abscex_coeffs_0"
+  }
+}
+g4rw_full_grid_abscex_coeff_abs_500_600: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_abs_500_600.Name: "g4rw_full_grid_abscex_coeff_abs_500_600"
+g4rw_full_grid_abscex_coeff_abs_500_600.Options.Branch: "g4rw_full_grid_abscex_coeffs_1"
+
+g4rw_full_grid_abscex_coeff_abs_600_700: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_abs_600_700.Name: "g4rw_full_grid_abscex_coeff_abs_600_700"
+g4rw_full_grid_abscex_coeff_abs_600_700.Options.Branch: "g4rw_full_grid_abscex_coeffs_2"
+
+g4rw_full_grid_abscex_coeff_abs_700_800: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_abs_700_800.Name: "g4rw_full_grid_abscex_coeff_abs_700_800"
+g4rw_full_grid_abscex_coeff_abs_700_800.Options.Branch: "g4rw_full_grid_abscex_coeffs_3"
+
+g4rw_full_grid_abscex_coeff_abs_800_900: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_abs_800_900.Name: "g4rw_full_grid_abscex_coeff_abs_800_900"
+g4rw_full_grid_abscex_coeff_abs_800_900.Options.Branch: "g4rw_full_grid_abscex_coeffs_4"
+
+g4rw_full_grid_abscex_coeff_abs_900_2000: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_abs_900_2000.Name: "g4rw_full_grid_abscex_coeff_abs_900_2000"
+g4rw_full_grid_abscex_coeff_abs_900_2000.Options.Branch: "g4rw_full_grid_abscex_coeffs_5"
+
+g4rw_full_grid_abscex_coeff_cex_0_500: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_cex_0_500.Name: "g4rw_full_grid_abscex_coeff_cex_0_500"
+g4rw_full_grid_abscex_coeff_cex_0_500.Options.Branch: "g4rw_full_grid_abscex_coeffs_6"
+
+g4rw_full_grid_abscex_coeff_cex_500_600: @local::g4rw_full_grid_abscex_coeff_cex_0_500
+g4rw_full_grid_abscex_coeff_cex_500_600.Name: "g4rw_full_grid_abscex_coeff_cex_500_600"
+g4rw_full_grid_abscex_coeff_cex_500_600.Options.Branch: "g4rw_full_grid_abscex_coeffs_7"
+
+g4rw_full_grid_abscex_coeff_cex_600_700: @local::g4rw_full_grid_abscex_coeff_cex_0_500
+g4rw_full_grid_abscex_coeff_cex_600_700.Name: "g4rw_full_grid_abscex_coeff_cex_600_700"
+g4rw_full_grid_abscex_coeff_cex_600_700.Options.Branch: "g4rw_full_grid_abscex_coeffs_8"
+
+g4rw_full_grid_abscex_coeff_cex_700_800: @local::g4rw_full_grid_abscex_coeff_cex_0_500
+g4rw_full_grid_abscex_coeff_cex_700_800.Name: "g4rw_full_grid_abscex_coeff_cex_700_800"
+g4rw_full_grid_abscex_coeff_cex_700_800.Options.Branch: "g4rw_full_grid_abscex_coeffs_9"
+
+g4rw_full_grid_abscex_coeff_cex_800_900: @local::g4rw_full_grid_abscex_coeff_cex_0_500
+g4rw_full_grid_abscex_coeff_cex_800_900.Name: "g4rw_full_grid_abscex_coeff_cex_800_900"
+g4rw_full_grid_abscex_coeff_cex_800_900.Options.Branch: "g4rw_full_grid_abscex_coeffs_10"
+
+g4rw_full_grid_abscex_coeff_cex_900_2000: @local::g4rw_full_grid_abscex_coeff_cex_0_500
+g4rw_full_grid_abscex_coeff_cex_900_2000.Name: "g4rw_full_grid_abscex_coeff_cex_900_2000"
+g4rw_full_grid_abscex_coeff_cex_900_2000.Options.Branch: "g4rw_full_grid_abscex_coeffs_11"
+
+g4rw_full_grid_abscex_coeff_other_0_500: @local::g4rw_full_grid_abscex_coeff_abs_0_500
+g4rw_full_grid_abscex_coeff_other_0_500.Name: "g4rw_full_grid_abscex_coeff_other_0_500"
+g4rw_full_grid_abscex_coeff_other_0_500.Options.Branch: "g4rw_full_grid_abscex_coeffs_12"
+
+g4rw_full_grid_abscex_coeff_other_500_600: @local::g4rw_full_grid_abscex_coeff_other_0_500
+g4rw_full_grid_abscex_coeff_other_500_600.Name: "g4rw_full_grid_abscex_coeff_other_500_600"
+g4rw_full_grid_abscex_coeff_other_500_600.Options.Branch: "g4rw_full_grid_abscex_coeffs_13"
+
+g4rw_full_grid_abscex_coeff_other_600_700: @local::g4rw_full_grid_abscex_coeff_other_0_500
+g4rw_full_grid_abscex_coeff_other_600_700.Name: "g4rw_full_grid_abscex_coeff_other_600_700"
+g4rw_full_grid_abscex_coeff_other_600_700.Options.Branch: "g4rw_full_grid_abscex_coeffs_14"
+
+g4rw_full_grid_abscex_coeff_other_700_800: @local::g4rw_full_grid_abscex_coeff_other_0_500
+g4rw_full_grid_abscex_coeff_other_700_800.Name: "g4rw_full_grid_abscex_coeff_other_700_800"
+g4rw_full_grid_abscex_coeff_other_700_800.Options.Branch: "g4rw_full_grid_abscex_coeffs_15"
+
+g4rw_full_grid_abscex_coeff_other_800_900: @local::g4rw_full_grid_abscex_coeff_other_0_500
+g4rw_full_grid_abscex_coeff_other_800_900.Name: "g4rw_full_grid_abscex_coeff_other_800_900"
+g4rw_full_grid_abscex_coeff_other_800_900.Options.Branch: "g4rw_full_grid_abscex_coeffs_16"
+
+g4rw_full_grid_abscex_coeff_other_900_2000: @local::g4rw_full_grid_abscex_coeff_other_0_500
+g4rw_full_grid_abscex_coeff_other_900_2000.Name: "g4rw_full_grid_abscex_coeff_other_900_2000"
+g4rw_full_grid_abscex_coeff_other_900_2000.Options.Branch: "g4rw_full_grid_abscex_coeffs_17"
+
+G4RWFitAbsCexPars: [
+  @local::g4rw_full_grid_abscex_coeff_abs_0_500,
+  @local::g4rw_full_grid_abscex_coeff_abs_500_600,
+  @local::g4rw_full_grid_abscex_coeff_abs_600_700,
+  @local::g4rw_full_grid_abscex_coeff_abs_700_800,
+  @local::g4rw_full_grid_abscex_coeff_abs_800_900,
+  @local::g4rw_full_grid_abscex_coeff_abs_900_2000,
+
+  @local::g4rw_full_grid_abscex_coeff_cex_0_500,
+  @local::g4rw_full_grid_abscex_coeff_cex_500_600,
+  @local::g4rw_full_grid_abscex_coeff_cex_600_700,
+  @local::g4rw_full_grid_abscex_coeff_cex_700_800,
+  @local::g4rw_full_grid_abscex_coeff_cex_800_900,
+  @local::g4rw_full_grid_abscex_coeff_cex_900_2000,
+
+  @local::g4rw_full_grid_abscex_coeff_other_0_500,
+  @local::g4rw_full_grid_abscex_coeff_other_500_600,
+  @local::g4rw_full_grid_abscex_coeff_other_600_700,
+  @local::g4rw_full_grid_abscex_coeff_other_700_800,
+  @local::g4rw_full_grid_abscex_coeff_other_800_900,
+  @local::g4rw_full_grid_abscex_coeff_other_900_2000
+]
+
+END_PROLOG

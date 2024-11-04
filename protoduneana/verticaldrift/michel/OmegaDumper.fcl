@@ -1,0 +1,22 @@
+BEGIN_PROLOG
+
+OmegaDumper: {
+    module_type:    "OmegaDumper"
+    # Trees:          ["Truth","Reco"]
+    Truth:          0
+    Reco:           1
+    Products:       [
+        ["generator",       "",     "simb::MCTruth",        "SingleGen"],
+        ["largeant",        "",     "simb::MCParticle",     "G4Stage1"],
+        ["largeant",        "LArG4DetectorServicevolTPCActive", "sim::SimEnergyDeposit","G4Stage1"],
+        ["pandora",         "",     "recob::PFParticle",    "Reco"],
+        ["pandoraTrack",    "",     "recob::Track",         "Reco"],
+        ["pandoraShower",   "",     "recob::Shower",        "Reco"],
+        ["pandora",         "",     "recob::Cluster",       "Reco"],
+        ["pandora",         "",     "recob::SpacePoint",    "Reco"],
+        ["hitpdune",        "",     "recob::Hit",           "Reco"],
+        ["pandoraGnocalo",  "",     "anab::Calorimetry",    "Reco"]
+    ]
+}
+
+END_PROLOG

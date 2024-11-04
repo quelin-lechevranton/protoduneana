@@ -1,0 +1,28 @@
+art_make(BASENAME_ONLY
+  MODULE_LIBRARIES
+  art::Framework_Core
+  art::Framework_Principal
+  art::Framework_Services_Registry
+  art::Persistency_Common
+  ROOT::Core
+  canvas::canvas
+  art::Persistency_Provenance
+  art::Utilities
+  messagefacility::MF_MessageLogger
+  cetlib 
+  cetlib_except
+  lardataobj::RecoBase
+  lardata::Utilities
+  larcorealg::Geometry
+  nusimdata::SimulationBase
+  larsim::MCCheater_PhotonBackTrackerService_service           
+  larsim::MCCheater_BackTrackerService_service           
+  larsim::MCCheater_ParticleInventoryService_service
+  larreco::RecoAlg
+  ROOT::Core ROOT::Tree ROOT::Hist
+  ProtoDUNEAnaUtils
+  duneprototypes::ProtoDUNEDataUtils
+  )
+install_headers()
+install_fhicl()
+install_source()

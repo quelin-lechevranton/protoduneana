@@ -1,0 +1,58 @@
+#include "services_dune.fcl"
+#include "services_refactored_pdune.fcl"
+#include "protodune_tools_dune.fcl"
+
+process_name: RunMyAnalysis  #Name this process (Must not include any underscores)
+
+source:
+{
+    module_type: RootInput
+    maxEvents:   -1
+}
+services: 
+{
+    #TFileService: {fileNames: "pdvd_BraggCal_out.root"}
+    TimeTracker:  {}
+    FileCatalogMetadata:            @local::art_file_catalog_mc
+    ExptGeoHelperInterface:         @local::dune_geometry_helper
+    DetectorPropertiesService:      @local::protodunevd_detproperties
+    FileCatalogMetadata:            @local::art_file_catalog_mc
+                                    @table::protodunevd_reco_services
+    LArPropertiesService:           @local::dunefd_properties
+} 
+
+
+physics: 
+{   
+    analyzers: 
+    { 
+        BraggCal: {module_type:    "BraggCal"
+            Verbose:        true
+            Products:       [
+                ["pandora",         "",     "recob::PFParticle",    "Reco"],
+                ["pandoraTrack",    "",     "recob::Track",         "Reco"],
+                ["pandoraShower",   "",     "recob::Shower",        "Reco"],
+                ["pandora",         "",     "recob::Cluster",       "Reco"],
+                ["pandora",         "",     "recob::SpacePoint",    "Reco"],
+                ["hitpdune",        "",     "recob::Hit",           "Reco"],
+                ["pandoraGnocalo",  "",     "anab::Calorimetry",    "Reco"]
+            ]
+            BraggLength:    5
+            CalMin:         20
+            Threshold:      0
+            Normalize:      0
+            dEdx_MIP:       2
+            dEdx_min_ratio: 1.5
+            AvgdEdxMin:     1
+            AvgdEdxMax:     4
+            BraggMin:       10
+        }
+    }   
+    ana: [ BraggCal ]
+    end_paths: [ ana ] # ana inserts into workflow, matches name in config fcl; @local:: matches the name in configuration fcl file
+}
+
+
+
+
+
