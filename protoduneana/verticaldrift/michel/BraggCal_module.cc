@@ -1,3 +1,16 @@
+/*
+ * Class: BraggCal
+ * Plugin Type: analyzer
+ * Art version: 3.14.04
+ * LArSoft version: v09_91_04d00
+ * File: BraggCal_module.cc
+ * 
+ * Analyzing Calorimetic information from tracks
+ * to identify decaying muons through Bragg peak
+ * 
+ * Author: Jérémy Quélin Lechevranton
+*/
+
 
 // Art includes
 #include "art/Framework/Core/EDAnalyzer.h"
@@ -37,13 +50,23 @@
 
 // ROOT includes
 #include <TTree.h>
+#include <TCanvas.h>
+#include <TPad.h>
+#include <TH2F.h>
 
 // std includes
 #include <vector>
 #include <iterator> 
 #include <string>
 
-using namespace std;
+// using namespace std;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::flush;
+using std::vector;
+using std::string;
+using std::pair;
 
 namespace ana { class BraggCal; }
 
@@ -61,12 +84,20 @@ public:
     
     void analyze(art::Event const & evt) override; 
     void beginJob() override;
-    // void endJob()   override;
+    void endJob()   override;
 
 private:
 
     bool v; //verbosity
     vector<vector<string>> vvsProducts;
+
+    TTree* tTree;
+    TH2F* hdEdx0;
+    TH2F* hdEdx1;
+    vector<float> vfdEdx;
+    vector<float> vfResRange;
+    vector<float> vfdEdx1;
+    vector<float> vfResRange1;
 
     art::InputTag   tag_pfp,
                     tag_clu,
@@ -80,8 +111,8 @@ private:
     size_t iCalMin;
     size_t iThreshold;
     size_t iNormalize;
-    float dEdx_MIP;
-    float dEdx_min_ratio;
+    float fdEdx_MIP;
+    float fdEdx_min_ratio;
     float fAvgdEdxMin;
     float fAvgdEdxMax;
     float fBraggMin;
@@ -96,14 +127,38 @@ ana::BraggCal::BraggCal(fhicl::ParameterSet const & fcl) :
     iCalMin(fcl.get<size_t>("CalMin")),
     iThreshold(fcl.get<size_t>("Threshold")),
     iNormalize(fcl.get<size_t>("Normalize")),
-    dEdx_MIP(fcl.get<float>("dEdx_MIP")),
-    dEdx_min_ratio(fcl.get<float>("dEdx_min_ratio")),
+    fdEdx_MIP(fcl.get<float>("dEdx_MIP")),
+    fdEdx_min_ratio(fcl.get<float>("dEdx_min_ratio")),
     fAvgdEdxMin(fcl.get<float>("AvgdEdxMin")),
     fAvgdEdxMax(fcl.get<float>("AvgdEdxMax")),
     fBraggMin(fcl.get<float>("BraggMin"))
 {
 
-    // art::ServiceHandle<art::TFileService> tfs;
+
+    art::ServiceHandle<art::TFileService> tfs;
+
+    tTree = tfs->make<TTree>("Bragg","Bragg");
+    tTree->Branch("vfdEdx",&vfdEdx);
+    tTree->Branch("vfResRange",&vfResRange);
+    tTree->Branch("vfdEdx1",&vfdEdx1);
+    tTree->Branch("vfResRange1",&vfResRange1);
+
+    hdEdx0 = new TH2F(
+        "hdEdx0",
+        "before bragg selection;residual range (cm);dE/dx (MeV/cm)",
+        100,0,300,
+        50,0,5
+    );
+    hdEdx1 = new TH2F(
+        "hdEdx1",
+        "after bragg selection;residual range (cm);dE/dx (MeV/cm)",
+        100,0,300,
+        50,0,5
+    );
+
+    cout << hdEdx0->GetEntries() << endl;
+    cout << hdEdx1->GetEntries() << endl;
+
     for (vector<string> prod : vvsProducts) {
 
         string  label=prod[0],
@@ -165,15 +220,18 @@ void ana::BraggCal::analyze(const art::Event & evt) {
 
         float avg_dEdx = 0;
         for (size_t i_cal=0; i_cal < n_cal; i_cal++) {
-            // float res_range;
+            float res_range;
             float dEdx = p_cal->dEdx()[i_cal];
-            // if (upright) {
-            //     res_range = p_cal->ResidualRange()[i_cal];
-            // } else {
-            //     res_range = p_cal->Range() - p_cal->ResidualRange()[i_cal];
-            // }
+            if (upright) {
+                res_range = p_cal->ResidualRange()[i_cal];
+            } else {
+                res_range = p_cal->Range() - p_cal->ResidualRange()[i_cal];
+            }
             avg_dEdx += dEdx;
-            // hdEdx->Fill(resrange,dEdx);
+
+            vfdEdx.push_back(dEdx);
+            vfResRange.push_back(res_range);
+            hdEdx0->Fill(res_range,dEdx);
         }
         avg_dEdx /= n_cal;
 
@@ -182,8 +240,8 @@ void ana::BraggCal::analyze(const art::Event & evt) {
 
         float dEdx_min = 0;
         switch (iThreshold) {
-            case 1: dEdx_min = dEdx_MIP * dEdx_min_ratio; break;
-            case 2: dEdx_min = avg_dEdx * dEdx_min_ratio; break;
+            case 1: dEdx_min = fdEdx_MIP * fdEdx_min_ratio; break;
+            case 2: dEdx_min = avg_dEdx * fdEdx_min_ratio; break;
             default: ;
         }
 
@@ -218,14 +276,52 @@ void ana::BraggCal::analyze(const art::Event & evt) {
 
         // divide by n_bragg_int ??
         switch (iNormalize) {
-            case 0: bragg_int /= dEdx_MIP;
+            case 0: bragg_int /= fdEdx_MIP;
             case 1: bragg_int /= avg_dEdx;
         }
 
         if (bragg_int < fBraggMin) continue;
         if (v) cout << "\t\tbragg int: " << bragg_int << " MIP" << endl;
         if (!v) cout << " \u2192 decaying muon at evt#" << evt.id().event() << " trk#" << p_trk->ID() << endl;
+
+        for (size_t i_cal=0; i_cal < n_cal; i_cal++) {
+            float res_range;
+            float dEdx = p_cal->dEdx()[i_cal];
+            if (upright) {
+                res_range = p_cal->ResidualRange()[i_cal];
+            } else {
+                res_range = p_cal->Range() - p_cal->ResidualRange()[i_cal];
+            }
+
+            vfdEdx1.push_back(dEdx);
+            vfResRange1.push_back(res_range);
+            hdEdx1->Fill(res_range,dEdx);
+        }
     } // end pfp loop
+
+    tTree->Fill();
 } // end analyze()
+
+void ana::BraggCal::endJob() {
+
+    art::ServiceHandle<art::TFileService> tfs;
+    TCanvas* cdEdx = tfs->make<TCanvas>("cdEdx","cdEdx");
+
+    cdEdx->cd();
+    cdEdx->Divide(2,1);
+
+    cdEdx->cd(1);
+    gPad->SetLogz();
+    hdEdx0->SetMinimum(1);
+    hdEdx0->Draw("colz");
+
+    cdEdx->cd(2);
+    gPad->SetLogz();
+    hdEdx1->SetMinimum(1);
+    hdEdx1->Draw("colz");
+
+    cdEdx->Write("cdEdx");
+
+}
 
 DEFINE_ART_MODULE(ana::BraggCal)

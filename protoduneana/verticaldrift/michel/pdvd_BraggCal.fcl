@@ -2,7 +2,7 @@
 #include "services_refactored_pdune.fcl"
 #include "protodune_tools_dune.fcl"
 
-process_name: RunMyAnalysis  #Name this process (Must not include any underscores)
+process_name: RunBraggCal  #Name this process (Must not include any underscores)
 
 source:
 {
@@ -11,7 +11,7 @@ source:
 }
 services: 
 {
-    #TFileService: {fileNames: "pdvd_BraggCal_out.root"}
+    TFileService: {fileName: "pdvd_BraggCal_out.root"}
     TimeTracker:  {}
     FileCatalogMetadata:            @local::art_file_catalog_mc
     ExptGeoHelperInterface:         @local::dune_geometry_helper
