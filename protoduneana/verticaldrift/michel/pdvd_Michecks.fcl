@@ -22,7 +22,7 @@ physics: {
     analyzers: {
         checks: {
             module_type:    "Michecks"
-            Verbosity:      true
+            LogLevel:       1
             Products:       [
                 ["SingleGen",  "generator",     "",       "simb::MCTruth"],
                 ["G4Stage1",   "largeant",      "",       "simb::MCParticle"],
