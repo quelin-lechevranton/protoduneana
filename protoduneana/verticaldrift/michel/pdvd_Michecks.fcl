@@ -35,8 +35,8 @@ physics: {
             ]
             
             MichelTimeRadius: 10.
-            MichelSpaceRadius: 10.
-            LengthCut: 10.
+            MichelSpaceRadius: 20.
+            LengthCut: 20.
         }
     }
     ana: [ checks ]
