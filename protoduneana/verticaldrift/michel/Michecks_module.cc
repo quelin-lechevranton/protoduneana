@@ -68,11 +68,8 @@ using std::endl;
 using std::flush;
 using std::vector;
 using std::string;
-using std::stringstream;
-using std::pair;
 using std::min;
 using std::max;
-using std::stoi;
 
 
 namespace ana {
@@ -115,48 +112,15 @@ private:
     protoana::ProtoDUNETruthUtils truthUtil;
     art::ServiceHandle<cheat::ParticleInventoryService> pi_serv;
     art::ServiceHandle<cheat::BackTrackerService> bt_serv;
-    
-    //verbosity
+
+    // Conversion factors
+    float fADCtoE = 200 * 23.6 * 1e-6 / 0.7; // 200 e-/ADC.tick * 23.6 eV/e- * 1e-6 MeV/eV / 0.7 recombination factor
+    float fChannelPitch = 0.5; // cm/channel
+
+    // Verbosity
     int iLogLevel;
     int iFlagSpecial = 1;
     int iFlagDetails = 2;
-
-    vector<vector<ana::Binning>> vvbChan;
-    ana::Binning bTick;
-    ana::Binning bE, bADC;
-
-    // TGraph2D* gMuon;
-    // TGraph2D* gMichel;
-    // TH1F* hWS;
-    // TH1F* hSignal;
-    // TH1F* hWire;
-    // TH2F* hWT;
-
-    vector<vector<TH2F*>> hHT; // [plane][section]
-    // vector<vector<TGraph*>> gMichelHits; // [plane][section]
-
-    vector<vector<TH2F*>> hTrueHits; // [plane][section]
-    vector<vector<TH2F*>> hFullHits; // [plane][section]
-    vector<vector<TH2F*>> hCylinderHits; // [plane][section]
-    vector<raw::ChannelID_t> vchMuonEnd;
-
-    vector<vector<TH1F*>> h1E; 
-    vector<TH2F*> h2Corr;
-    enum h1Ekeys {kTrue, kReco, kFullReco, kCylinderReco, kN};
-
-
-    // vector<TH1F*> hTrueE;
-    // vector<TH1F*> hRecoADC;
-    // vector<TH1F*> hFullRecoADC;
-    // vector<TH1F*> hCylinderRecoADC;
-
-    // TH2F* hTrueRecoCorr;
-    // TH2F* hRecoFullRecoCorr;
-    // TH2F* hTrueFullRecoCorr;
-    // TH2F* hTrueCylinderRecoCorr;
-    // TH2F* hFullRecoCylinderRecoCorr;
-
-
 
     // Products
     vector<vector<string>> vvsProducts;
@@ -168,11 +132,36 @@ private:
                     tag_trk,
                     tag_spt;
 
-
+    // Variables
     float fMichelTimeRadius, // in µs
           fMichelSpaceRadius, // in cm
           fTrackLengthCut; // in cm
 
+    vector<vector<ana::Binning>> vvbChan;
+    ana::Binning bTick, bE;
+
+    // TGraph2D* gMuon;
+    // TGraph2D* gMichel;
+    // TH1F* hWS;
+    // TH1F* hSignal;
+    // TH1F* hWire;
+    // TH2F* hWT;
+
+    vector<vector<TH2F*>> hHT; // [plane][section]
+    // vector<vector<TGraph*>> gMichelHits; // [plane][section]
+    TGraph2D* gPhantom;
+
+    vector<vector<TH2F*>> hTrueHits; // [plane][section]
+    vector<vector<TH2F*>> hFullHits; // [plane][section]
+    vector<vector<TH2F*>> hCylinderHits; // [plane][section]
+    vector<raw::ChannelID_t> vchMuonEnd;
+
+    vector<vector<TH1F*>> h1E; 
+    vector<TH2F*> h2Corr;
+    enum hEkeys {kTrue, kReco, kFull, kCylinder, kN};
+
+
+    // Functions
     geo::WireID GetWireID(geo::Point_t const& P, int plane);
     raw::ChannelID_t GetChannel(geo::Point_t const& P, int plane);
 
@@ -188,7 +177,7 @@ private:
 
     bool Logging(bool cond, int tab, string msg, string succ, string fail);
 
-    int upperTriangleIndex(int n, int i, int j);
+    int iCorr(int n, int i, int j);
 };
 
 
@@ -214,10 +203,10 @@ ana::Michecks::Michecks(fhicl::ParameterSet const& p)
     // Retrieving product tags
     for (vector<string> prod : vvsProducts) {
 
-        const string    process     =prod[0],
-                        label       =prod[1],
-                        instance    =prod[2],
-                        type        =prod[3];
+        const string    process     = prod[0],
+                        label       = prod[1],
+                        instance    = prod[2],
+                        type        = prod[3];
 
         const auto  tag = art::InputTag(label,instance);
 
@@ -245,14 +234,15 @@ ana::Michecks::Michecks(fhicl::ParameterSet const& p)
     bTick.min = 0.;
     bTick.max = detProp.ReadOutWindowSize();
 
-    bE.n = 20;
+    bE.n = 30;
     bE.min = 0.;
-    bE.max = 60.;
+    bE.max = 90.;
 
-    bADC.n = 20;
-    bADC.min = 0.;
-    bADC.max = 60.;
-
+    gPhantom = new TGraph2D();
+    gPhantom->SetTitle("Michel without hits");
+    gPhantom->SetMarkerStyle(20);
+    gPhantom->SetMarkerSize(0.5);
+    gPhantom->SetMarkerColor(kAzure+7);
 
     // gMuon = new TGraph2D();
     // gMuon->SetTitle("Truly Decaying Muon Track Points");    
@@ -315,68 +305,32 @@ ana::Michecks::Michecks(fhicl::ParameterSet const& p)
 
     vector<const char*> axes = {
         "True Kinetic Energy (MeV)",
-        "Reconstructed Energy (kADC)",
-        "Full Reconstructed Energy (kADC)",
-        "Reconstructed Energy in Cylinder (kADC)",
+        "Reconstructed Energy (~MeV)",
+        "Full Reconstructed Energy (~MeV)",
+        "Reconstructed Energy in Cylinder (~MeV)",
     };
     h1E = vector<vector<TH1F*>>(kN, vector<TH1F*>(2));
     for (int i=0; i<kN; i++) {
         for (int anti=0; anti<2; anti++) {
-            h1E.at(i).at(anti) = new TH1F(
+            h1E[i][anti] = new TH1F(
                 Form("h1E_%d%s",i,anti ? "posi" : "elec"),
-                Form(";%s;#",axes.at(i)),
-                i ? bADC.n : bE.n,  
-                i ? bADC.min : bE.min,
-                i ? bADC.max : bE.max
+                Form(";%s;#",axes[i]),
+                bE.n, bE.min, bE.max
             );
         }
     }
     h2Corr = vector<TH2F*>(kN*(kN-1)/2);
     for (int i=0; i<kN-1; i++) {
         for (int j=i+1; j<kN; j++) {
-            h2Corr.at(upperTriangleIndex(kN,i,j)) = new TH2F(
+            h2Corr[iCorr(kN,i,j)] = new TH2F(
                 Form("h2Corr_%d%d",i,j),
-                Form("%s;%s;%s","Michel Energy Correlations",axes.at(i),axes.at(j)),
+                Form("%s;%s;%s","Michel Energy Correlations",axes[i],axes[j]),
                 bE.n, bE.min, bE.max,
                 bE.n, bE.min, bE.max
             );
         }
     }
 }
-
-void ana::Michecks::beginJob()
-{
-    // auto const clockData = asDetClocks->DataForJob();
-    // auto const detProp = asDetProp->DataForJob(clockData);
-
-    if (iLogLevel >= iFlagDetails) {
-        geo::CryostatID cryoid{0};
-        cout << "\033[94m" << "BeginJob: Detector dimensions===================================================" << "\033[0m" << endl
-             << "Number of channels: " << asGeo->Nchannels() << endl
-             << "Number of ticks: " << "???" << endl
-             << "Cryostat coordinates: " << asGeo->Cryostat(cryoid).Min() << " - " << asGeo->Cryostat(cryoid).Max() << endl
-             << "\tvolume: " << asGeo->Cryostat(cryoid).Width() << " x " << asGeo->Cryostat(cryoid).Height() << " x " << asGeo->Cryostat(cryoid).Length() << endl;
-        geo::TPCID tpc0{cryoid, 0}, tpcN{cryoid, asGeo->NTPC(cryoid)-1};
-        cout << "\tactive coordinates: " << asGeo->TPC(tpc0).Min() << " - " << asGeo->TPC(tpcN).Max() << endl
-             << "\tactive volume: " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).X() << " x " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).Y() << " x " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).Z() << endl
-             << "TPCs:" << endl; 
-        for (unsigned int i_tpc=0; i_tpc < asGeo->NTPC(); i_tpc++) {
-            geo::TPCID tpcid{cryoid, i_tpc};
-            cout << "\tTPC#" << i_tpc << "\tcoordinates: " << asGeo->TPC(tpcid).Min() << " - " << asGeo->TPC(tpcid).Max() << endl
-                 << "\t\tvolume: " << asGeo->TPC(tpcid).Width() << " x " << asGeo->TPC(tpcid).Height() << " x " << asGeo->TPC(tpcid).Length() << endl
-                 << "\t\tactive volume: " << asGeo->TPC(tpcid).ActiveWidth() << " x " << asGeo->TPC(tpcid).ActiveHeight() << " x " << asGeo->TPC(tpcid).ActiveLength() << endl
-                 << "\t\tPlanes:";
-            for (unsigned int i_plane=0; i_plane < asGeo->Nplanes(); i_plane++) {
-                geo::PlaneID planeid{tpcid, i_plane};
-                vector<string> plane_names = {"U","V","W"};
-                cout << "\t" << plane_names[i_plane] << " #Wires: " << asGeo->Nwires(planeid);
-            } // end loop over Planes
-            cout << endl;
-        } // end loop over TPCs
-        cout << "\033[94m" << "End of detector dimensions======================================================" << "\033[0m" << endl;
-    }
-}
-
 
 void ana::Michecks::analyze(art::Event const& e)
 {
@@ -399,11 +353,6 @@ void ana::Michecks::analyze(art::Event const& e)
 
         if (iLogLevel >= iFlagDetails) cout << "\ttrk#" << p_trk->ID()+1 << "\r" << flush;
 
-        if (p_trk->ID() != (int) p_trk.key()) {
-            cerr << endl << "\033[91m" << "Track ID and key do not match" << "\033[0m" << endl;
-            continue;
-        }
-
         simb::MCParticle const * mcp = truthUtil.GetMCParticleFromRecoTrack(clockData, *p_trk, e, tag_trk.label());
         if (Logging(
             !mcp, 
@@ -414,6 +363,7 @@ void ana::Michecks::analyze(art::Event const& e)
             abs(mcp->PdgCode()) != 13,
             2, "is muon...", "yes", "no")
         ) continue;
+        if (iLogLevel >= iFlagSpecial) cout << "muon pdg: " << mcp->PdgCode() << endl;
 
         if (Logging(
             mcp->EndProcess() != "Decay",
@@ -442,7 +392,7 @@ void ana::Michecks::analyze(art::Event const& e)
             ) continue;
 
             if (Logging(
-                !IsInVolume(mcp_dau->Position(0), 2*fMichelSpaceRadius),
+                !IsInVolume(mcp_dau->Position(0), fMichelSpaceRadius),
                 3, "is inside...", "yes", "no")
             ) i_dau = -1;
             break;
@@ -455,46 +405,55 @@ void ana::Michecks::analyze(art::Event const& e)
         double TrueE = (mcp_mich->E() - mcp_mich->Mass())*1e3;
 
         int anti = mcp_mich->PdgCode() > 0 ? 0 : 1;
-        if (iLogLevel >= iFlagSpecial) cout << "anti: " << (anti ? "posi" : "elec") << " pdg: " << mcp_mich->PdgCode() << endl;
+        if (iLogLevel >= iFlagSpecial) cout << "\tMichel pdg: " << mcp_mich->PdgCode() << endl;
         vAnti.push_back(anti);
 
-        // hTrueE.at(anti)->Fill(TrueE);
-        h1E.at(kTrue).at(anti)->Fill(TrueE);
+        // hTrueE[anti]->Fill(TrueE);
+        h1E[kTrue][anti]->Fill(TrueE);
         vTrueE.push_back(TrueE);
         if (iLogLevel >= iFlagDetails) cout << "\t\t\tTrueE: " << TrueE << " MeV" << endl;
 
         vector<const recob::Hit*> hits_michel = truthUtil.GetMCParticleHits(clockData, *mcp_mich, e, tag_hit.label(), false);
 
         double RecoADC = 0;
+        float prev_SummedADC = 0;
         if (iLogLevel >= iFlagDetails) cout << "\t\t\tlooping over michel's " << hits_michel.size() << " hits...";
         for (recob::Hit const* hit : hits_michel) {
 
             int plane = hit->View();
             int section = GetSection(hit->Channel());
-            // gMichelHits.at(plane).at(section)->AddPoint(hit->PeakTime(), hit->Channel());
-            hTrueHits.at(plane).at(section)->Fill(hit->PeakTime(), hit->Channel());
+            // gMichelHits[plane][section]->AddPoint(hit->PeakTime(), hit->Channel());
+            hTrueHits[plane][section]->Fill(hit->PeakTime(), hit->Channel());
 
-            // if (plane != 2) continue;
+            if (plane != 2) continue;
+
+            if (hit->SummedADC() == prev_SummedADC) continue;
+
             RecoADC += hit->SummedADC(); 
+            prev_SummedADC = hit->SummedADC();
         } // end loop over michel hits
         if (iLogLevel >= iFlagDetails) cout << "\033[92m" << " done" << "\033[0m" << endl;
 
         if (iLogLevel >= iFlagSpecial) {
             if (RecoADC < 1000) {
-                cout << "michel wiht no RecoADC @ " << mcp_mich->Vx(0) << "," << mcp_mich->Vy(0) << "," << mcp_mich->Vz(0) << endl;
+                cout << "michel with low RecoADC: " << hits_michel.size() << " hits @" << geo::Point_t(mcp_mich->Position(0).Vect()) << endl;
             }
         }
+        if (!hits_michel.size()) {
+            gPhantom->AddPoint(mcp_mich->Vx(0), mcp_mich->Vy(0), mcp_mich->Vz(0));
+        }
 
-        // hRecoADC.at(anti)->Fill(RecoADC*1e-3);
-        h1E.at(kReco).at(anti)->Fill(RecoADC*1e-3);
-        vRecoADC.push_back(RecoADC*1e-3);
+        // hRecoADC[anti]->Fill(RecoADC*fADCtoE);
+        h1E[kReco][anti]->Fill(RecoADC*fADCtoE);
+        vRecoADC.push_back(RecoADC*fADCtoE);
         if (iLogLevel >= iFlagDetails) cout << "\t\t\tRecoADC: " << RecoADC << endl;
 
-        // hTrueRecoCorr->Fill(TrueE, RecoADC*1e-3);
-        h2Corr.at(upperTriangleIndex(kN,kTrue,kReco))->Fill(TrueE, RecoADC*1e-3);
+        // hTrueRecoCorr->Fill(TrueE, RecoADC*fADCtoE);
+        h2Corr[iCorr(kN,kTrue,kReco)]->Fill(TrueE, RecoADC*fADCtoE);
 
 
         double FullRecoADC = RecoADC;
+        prev_SummedADC = 0;
 
         if (iLogLevel >= iFlagDetails) cout << "\t\t\tlooping over michel's " << mcp_mich->NumberDaughters() << " daughters..." << endl;
         for (int i_dau=0; i_dau< mcp_mich->NumberDaughters(); i_dau++) {
@@ -520,22 +479,26 @@ void ana::Michecks::analyze(art::Event const& e)
 
                 int plane = hit->View();
                 int section = GetSection(hit->Channel());
-                hFullHits.at(plane).at(section)->Fill(hit->PeakTime(), hit->Channel());
+                hFullHits[plane][section]->Fill(hit->PeakTime(), hit->Channel());
+
+                if (plane != 2) continue;
+                if (hit->SummedADC() == prev_SummedADC) continue;
 
                 FullRecoADC += hit->SummedADC();
+                prev_SummedADC = hit->SummedADC();
             } // end loop over electron hits
             if (iLogLevel >= iFlagDetails) cout << "\033[92m" << " done" << "\033[0m" << endl;
         } // end loop over michel daughters
 
-        // hFullRecoADC.at(anti)->Fill(FullRecoADC*1e-3);
-        h1E.at(kFullReco).at(anti)->Fill(FullRecoADC*1e-3);
-        vFullRecoADC.push_back(FullRecoADC*1e-3);
+        // hFullRecoADC[anti]->Fill(FullRecoADC*fADCtoE);
+        h1E[kFull][anti]->Fill(FullRecoADC*fADCtoE);
+        vFullRecoADC.push_back(FullRecoADC*fADCtoE);
         if (iLogLevel >= iFlagDetails) cout << "\t\t\tFullRecoADC: " << FullRecoADC << endl;
 
-        // hRecoFullRecoCorr->Fill(RecoADC*1e-3, FullRecoADC*1e-3);
-        // hTrueFullRecoCorr->Fill(TrueE, FullRecoADC*1e-3);
-        h2Corr.at(upperTriangleIndex(kN,kReco,kFullReco))->Fill(RecoADC*1e-3, FullRecoADC*1e-3);
-        h2Corr.at(upperTriangleIndex(kN,kTrue,kFullReco))->Fill(TrueE, FullRecoADC*1e-3);
+        // hRecoFullRecoCorr->Fill(RecoADC*fADCtoE, FullRecoADC*fADCtoE);
+        // hTrueFullRecoCorr->Fill(TrueE, FullRecoADC*fADCtoE);
+        h2Corr[iCorr(kN,kReco,kFull)]->Fill(RecoADC*fADCtoE, FullRecoADC*fADCtoE);
+        h2Corr[iCorr(kN,kTrue,kFull)]->Fill(TrueE, FullRecoADC*fADCtoE);
 
         geo::Point_t trk_end;
         if (IsUpright(*p_trk)) {
@@ -592,6 +555,7 @@ void ana::Michecks::analyze(art::Event const& e)
         raw::ChannelID_t ch_mu_mcp_end = GetChannel(geo::Point_t(mcp_mich->EndPosition().Vect()), 2);
         raw::ChannelID_t ch_mu_trk_end = GetChannel(trk_end, 2);
 
+
         if(Logging(
             ch_mu_trk_end == raw::InvalidChannelID || ch_mu_mcp_end == raw::InvalidChannelID,
             2, "mu end channel is valid...", "yes", "no")
@@ -635,12 +599,13 @@ void ana::Michecks::analyze(art::Event const& e)
     vector<double> vCylinderRecoADC(vch_mu_end.size(), 0);
 
     if (iLogLevel >= iFlagDetails) cout << "\tlooping over all hits...";
+    float prev_summedADC = 0;
     for (art::Ptr<recob::Hit> const& p_hit : vp_hit) {
 
         int plane = p_hit->View();
         int section = GetSection(p_hit->Channel());
 
-        hHT.at(plane).at(section)->Fill(p_hit->PeakTime(), p_hit->Channel());
+        hHT[plane][section]->Fill(p_hit->PeakTime(), p_hit->Channel());
 
         // if (plane != 2) continue;
 
@@ -655,39 +620,77 @@ void ana::Michecks::analyze(art::Event const& e)
 
         for (unsigned int i=0; i<vch_mu_end.size(); i++) {
 
-            if (vch_mu_end.at(i) == raw::InvalidChannelID) continue;
+            if (vch_mu_end[i] == raw::InvalidChannelID) continue;
 
-            if (p_hit->Channel() - vch_mu_end.at(i) > fMichelSpaceRadius / 0.5) continue;
+            if (abs(int(p_hit->Channel() - vch_mu_end[i])) > fMichelSpaceRadius / fChannelPitch) continue;
 
-            hCylinderHits.at(plane).at(section)->Fill(p_hit->PeakTime(), p_hit->Channel());
+            hCylinderHits[plane][section]->Fill(p_hit->PeakTime(), p_hit->Channel());
 
+            if (plane != 2) continue;
 
-            vCylinderRecoADC.at(i) += p_hit->SummedADC() * 1e-3;
+            if (p_hit->SummedADC() == prev_summedADC) continue;
+            vCylinderRecoADC[i] += p_hit->SummedADC() * fADCtoE;
+            prev_summedADC = p_hit->SummedADC();
         } // end loop over muon ends
     } // end loop over hits
     if (iLogLevel >= iFlagDetails) cout << "\033[92m" << " done" << "\033[0m" << endl;
 
 
     if ( vTrueE.size() != vRecoADC.size() || vTrueE.size() != vFullRecoADC.size() || vTrueE.size() != vCylinderRecoADC.size() ) {
-        cerr << "\033[91m" << "Size mismatch between vectors" << "\033[0m" << endl;
+        cerr << "\033[91m" << "Size mismatch between vectors: " << "\033[0m"
+             << vTrueE.size() << " " << vRecoADC.size() << " " << vFullRecoADC.size() << " " << vCylinderRecoADC.size() << endl;
         return;
     }
 
     for (unsigned int i=0; i<vTrueE.size(); i++) {
-        // hCylinderRecoADC.at(vAnti.at(i))->Fill(vCylinderRecoADC.at(i));
-        // hTrueCylinderRecoCorr->Fill(vTrueE.at(i), vCylinderRecoADC.at(i));
-        // hFullRecoCylinderRecoCorr->Fill(vFullRecoADC.at(i), vCylinderRecoADC.at(i));
-        h1E.at(kCylinderReco).at(vAnti.at(i))->Fill(vCylinderRecoADC.at(i));
-        h2Corr.at(upperTriangleIndex(kN,kTrue,kCylinderReco))->Fill(vTrueE.at(i), vCylinderRecoADC.at(i));
-        h2Corr.at(upperTriangleIndex(kN,kFullReco,kCylinderReco))->Fill(vFullRecoADC.at(i), vCylinderRecoADC.at(i));
+        // hCylinderRecoADC[vAnti[i]]->Fill(vCylinderRecoADC[i]);
+        // hTrueCylinderRecoCorr->Fill(vTrueE[i], vCylinderRecoADC[i]);
+        // hFullRecoCylinderRecoCorr->Fill(vFullRecoADC[i], vCylinderRecoADC[i]);
+        h1E[kCylinder][vAnti[i]]->Fill(vCylinderRecoADC[i]);
+        h2Corr[iCorr(kN,kTrue,kCylinder)]->Fill(vTrueE[i], vCylinderRecoADC[i]);
+        h2Corr[iCorr(kN,kFull,kCylinder)]->Fill(vFullRecoADC[i], vCylinderRecoADC[i]);
     } // end loop over michel ends
 
 } // end analyze
 
+void ana::Michecks::beginJob()
+{
+    // auto const clockData = asDetClocks->DataForJob();
+    // auto const detProp = asDetProp->DataForJob(clockData);
+
+    if (iLogLevel >= iFlagDetails) {
+        geo::CryostatID cryoid{0};
+        cout << "\033[94m" << "Michecks::beginJob: Detector dimension =========================================" << "\033[0m" << endl
+             << "Number of channels: " << asGeo->Nchannels() << endl
+             << "Number of ticks: " << "???" << endl
+             << "Cryostat coordinates: " << asGeo->Cryostat(cryoid).Min() << " - " << asGeo->Cryostat(cryoid).Max() << endl
+             << "\tvolume: " << asGeo->Cryostat(cryoid).Width() << " x " << asGeo->Cryostat(cryoid).Height() << " x " << asGeo->Cryostat(cryoid).Length() << endl;
+        geo::TPCID tpc0{cryoid, 0}, tpcN{cryoid, asGeo->NTPC(cryoid)-1};
+        cout << "\tactive coordinates: " << asGeo->TPC(tpc0).Min() << " - " << asGeo->TPC(tpcN).Max() << endl
+             << "\tactive volume: " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).X() << " x " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).Y() << " x " << (asGeo->TPC(tpc0).Max() - asGeo->TPC(tpcN).Min()).Z() << endl
+             << "TPCs:" << endl; 
+        for (unsigned int i_tpc=0; i_tpc < asGeo->NTPC(); i_tpc++) {
+            geo::TPCID tpcid{cryoid, i_tpc};
+            cout << "\tTPC#" << i_tpc << "\tcoordinates: " << asGeo->TPC(tpcid).Min() << " - " << asGeo->TPC(tpcid).Max() << endl
+                 << "\t\tvolume: " << asGeo->TPC(tpcid).Width() << " x " << asGeo->TPC(tpcid).Height() << " x " << asGeo->TPC(tpcid).Length() << endl
+                 << "\t\tactive volume: " << asGeo->TPC(tpcid).ActiveWidth() << " x " << asGeo->TPC(tpcid).ActiveHeight() << " x " << asGeo->TPC(tpcid).ActiveLength() << endl
+                 << "\t\tPlanes:";
+            for (unsigned int i_plane=0; i_plane < asGeo->Nplanes(); i_plane++) {
+                geo::PlaneID planeid{tpcid, i_plane};
+                vector<string> plane_names = {"U","V","W"};
+                cout << "\t" << plane_names[i_plane] << " #Wires: " << asGeo->Nwires(planeid);
+            } // end loop over Planes
+            cout << endl;
+        } // end loop over TPCs
+        cout << "\033[94m" << "End of Michecks::beginJob ======================================================" << "\033[0m" << endl;
+    }
+} // end beginJob
+
+
 void ana::Michecks::endJob()
 {
 
-    if (iLogLevel >= iFlagDetails) cout << "\033[94m" << "EndJob: Drawing=================================================================" << "\033[0m" << endl;
+    if (iLogLevel >= iFlagDetails) cout << "\033[94m" << "Michecks::endJob: Plotting section =============================================" << "\033[0m" << endl;
 
     auto const clockData = asDetClocks->DataForJob();
     auto const detProp = asDetProp->DataForJob(clockData);
@@ -695,12 +698,13 @@ void ana::Michecks::endJob()
 
 
 
-    // TCanvas* c3d = tfs->make<TCanvas>("c3d","Decay Muon and Michel Electron");
+    TCanvas* c3d = tfs->make<TCanvas>("c3d","Decay Muon and Michel Electron");
 
-    // c3d->cd();
+    c3d->cd();
+    gPhantom->Draw("p");
     // gMuon->Draw("p");
     // gMichel->Draw("same p");
-    // c3d->Write();
+    c3d->Write();
 
     // TCanvas* c2 = tfs->make<TCanvas>("cwc","Wire content");
 
@@ -731,36 +735,34 @@ void ana::Michecks::endJob()
 
     vector<TCanvas*> cPlanes(3);
     for (int plane=0; plane<3; plane++) {
-        cPlanes.at(plane) = new TCanvas(Form("c%c",'U'+plane),Form("%c Plane",'U'+plane));
+        cPlanes[plane] = new TCanvas(Form("c%c",'U'+plane),Form("%c Plane",'U'+plane));
 
         if (iLogLevel >= iFlagDetails) cout << "plane#" << plane << "\r" << flush;
-        cPlanes.at(plane)->Divide(2,2);
+        cPlanes[plane]->Divide(2,2);
 
         for (int section=0; section<4; section++) {
 
             if (iLogLevel >= iFlagDetails) cout << "\tsec#" << section << "\r" << flush;
-            cPlanes.at(plane)->cd(section+1);
+            cPlanes[plane]->cd(section+1);
 
-            stringstream title;
-            title << "Plane " << plane << " Section " << section << ";Tick;Channel";
             gPad->DrawFrame(
                 bTick.min, vvbChan[plane][section].min, 
                 bTick.max, vvbChan[plane][section].max, 
-                title.str().c_str()
+                Form("Plane %c Section %d;Tick;Channel", 'U'+plane, section)
             );
             gPad->SetLogz();
 
-            hHT.at(plane).at(section)->SetMinimum(0.1);
-            hHT.at(plane).at(section)->Draw("colz same");
+            hHT[plane][section]->SetMinimum(0.1);
+            hHT[plane][section]->Draw("colz same");
 
             if (iLogLevel >= iFlagDetails) cout << "\t\tDrawn Hit/Time" << endl;
 
-            hTrueHits.at(plane).at(section)->SetMarkerStyle(20);
-            hTrueHits.at(plane).at(section)->SetMarkerSize(0.5);
-            hTrueHits.at(plane).at(section)->SetMarkerColor(kAzure+7);
-            hTrueHits.at(plane).at(section)->Draw("same");
+            hTrueHits[plane][section]->SetMarkerStyle(20);
+            hTrueHits[plane][section]->SetMarkerSize(0.5);
+            hTrueHits[plane][section]->SetMarkerColor(kAzure+7);
+            hTrueHits[plane][section]->Draw("same");
 
-            // TGraph* g = gMichelHits.at(plane).at(section);
+            // TGraph* g = gMichelHits[plane][section];
 
             // for (int i=0; i<g->GetN(); i++) {
 
@@ -786,6 +788,7 @@ void ana::Michecks::endJob()
             // } // end loop over michel hits
             // if (iLogLevel >= iFlagDetails) cout << "\t\tDrawn ellipses" << endl;
         } // end loop over sections
+        cPlanes[plane]->Write();
     } // end loop over planes
 
     for (raw::ChannelID_t ch : vchMuonEnd) {
@@ -793,7 +796,7 @@ void ana::Michecks::endJob()
         int section = GetSection(ch);
         int plane = GetPlane(ch, section);
 
-        cPlanes.at(plane)->cd(section+1);
+        cPlanes[plane]->cd(section+1);
         
         TLine* lminus = new TLine(0, ch - fMichelSpaceRadius, detProp.ReadOutWindowSize(), ch - fMichelSpaceRadius);
         TLine* lplus = new TLine(0, ch + fMichelSpaceRadius, detProp.ReadOutWindowSize(), ch + fMichelSpaceRadius);
@@ -806,7 +809,7 @@ void ana::Michecks::endJob()
     }
 
     for (int plane=0; plane<3; plane++) {
-        cPlanes.at(plane)->Write();
+        cPlanes[plane]->Write();
     }
 
 
@@ -814,13 +817,13 @@ void ana::Michecks::endJob()
     cE->Divide(2,2);
     for (int i=0; i<kN; i++) {
         cE->cd(i+1);
-        h1E.at(i).at(0)->SetLineColor(kAzure+7);
-        h1E.at(i).at(0)->SetLineWidth(2);
-        h1E.at(i).at(1)->SetLineColor(kViolet-3);
-        h1E.at(i).at(1)->SetLineWidth(2);
-        int first = h1E.at(i).at(0)->GetMaximum() > h1E.at(i).at(1)->GetMaximum() ? 0 : 1;
-        h1E.at(i).at(first)->Draw();
-        h1E.at(i).at(1-first)->Draw("same");
+        h1E[i][0]->SetLineColor(kAzure+7);
+        h1E[i][0]->SetLineWidth(2);
+        h1E[i][1]->SetLineColor(kViolet-3);
+        h1E[i][1]->SetLineWidth(2);
+        int first = h1E[i][0]->GetMaximum() > h1E[i][1]->GetMaximum() ? 0 : 1;
+        h1E[i][first]->Draw();
+        h1E[i][1-first]->Draw("same");
     }
     cE->Write();
 
@@ -832,13 +835,13 @@ void ana::Michecks::endJob()
     }
     for (unsigned int i=0; i<h2Corr.size(); i++) {
         cCorr->cd(i+1);
-        h2Corr.at(i)->Draw("colz");
+        h2Corr[i]->Draw("colz");
     }
     cCorr->Write();
             
 
-    if (iLogLevel >= iFlagDetails) cout << "\033[94m" << "End of Drawing==================================================================" << "\033[0m" << endl;
-}
+    if (iLogLevel >= iFlagDetails) cout << "\033[94m" << "End of Michecks::endJob ========================================================" << "\033[0m" << endl;
+} // end endJob
 
 
 bool ana::Michecks::IsInVolume(double x, double y, double z, double eps) {
@@ -896,7 +899,8 @@ bool ana::Michecks::Logging(bool cond, int tab, string msg, string succ, string 
     return cond;
 }
 
-int ana::Michecks::upperTriangleIndex(int n, int i, int j) {
+// Upper triangle of a symmetric matrix
+int ana::Michecks::iCorr(int n, int i, int j) {
     return j - 1 + i*n - (i*(i+3))/2;
 }
 

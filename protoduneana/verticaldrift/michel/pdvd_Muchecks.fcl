@@ -1,10 +1,10 @@
 #include "services_refactored_pdune.fcl"
 #include "protodune_tools_dune.fcl"
 
-process_name: RunMichecks
+process_name: RunMuchecks
 
 services: {
-    TFileService: { fileName: "pdvd_Michecks_out.root" }
+    TFileService: { fileName: "pdvd_Muchecks_out.root" }
     TimeTracker: {}
     ExptGeoHelperInterface:     @local::dune_geometry_helper
     DetectorPropertiesService:  @local::protodunevd_detproperties
@@ -21,7 +21,7 @@ source: {
 physics: {
     analyzers: {
         checks: {
-            module_type:    "Michecks"
+            module_type:    "Muchecks"
             Products:       [
                 ["SingleGen",  "generator",     "",       "simb::MCTruth"],
                 ["G4Stage1",   "largeant",      "",       "simb::MCParticle"],
@@ -33,11 +33,10 @@ physics: {
                 ["Reco",       "pandora",       "",       "recob::SpacePoint"]
             ]
 
-            LogLevel:       1
+            LogLevel:  2
             
-            MichelTimeRadius: 10.
-            MichelSpaceRadius: 20.
             LengthCut: 20.
+            MichelSpaceRadius: 20.
         }
     }
     ana: [ checks ]
